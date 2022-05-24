@@ -73,7 +73,6 @@ padding-bottom:30px;
 .add_question{
   
     background-color: white;
-    
     border-radius: 8px;
     padding:25px 22px;
     text-transform: capitalize;
@@ -232,13 +231,11 @@ background:transparent;
 .saved_questions
 {
     background-color: white;
-
     border-radius: 8px;
     padding:20px 2px;
     text-transform: capitalize;
     display:flex;
     flex-direction: column;
-
     
 }
 

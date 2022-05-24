@@ -1,14 +1,13 @@
 import Formheader from './Formheader'
 import CenteredTabs from './CenteredTabs'
-import Quesition_form from './Quesition_form'
+import QuesitionForm from './Quesition_form'
 
 function BodyDetail() {
   return (
     <div className="Body">
         <Formheader/>
-     <CenteredTabs/>
-     <Quesition_form/>
-     
+        <CenteredTabs/>
+        <QuesitionForm/>
     </div>
   );
 }

@@ -1,47 +1,62 @@
-import React from "react";
+import React,{useState,useEffect} from 'react'
+import "../components/Mainbody.css"
 import StorageIcon from '@material-ui/icons/Storage';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import FolderOpenIcon from '@material-ui/icons/FolderOpen';
-import {IconButton} from '@material-ui/core';
-import  MoreVertIcon  from "@material-ui/icons/MoreVert";
-import './Mainbody.css'
-import contact from '../images/contact.png'
+import { IconButton } from '@material-ui/core';
+import Card from "../components/Card" 
+import axios from "axios";
 
 function Mainbody() {
-  return (
-    <div className="main_body">
-        <div className="mainbody_top">
-        <div className="mainbody_top_left" style={{fontSize:"16px",fontWeight:"500"}}>
-            Rexent forms
-        </div>
-        <div className="mainbody_top_right">
-            <div className="mainbody_top_center" style={{fontSize:"14px",marginRight:"125px"}}>Owned by anyone <ArrowDropDownIcon/></div> 
-            <IconButton>
-                <StorageIcon style={{fontSize:"16px", color:"black"}}/>
-            </IconButton> 
-            <IconButton>
-                <FolderOpenIcon style={{fontSize:"16px", color:"black"}}/>
-            </IconButton>   
-        </div>
+    const [files,setFiles]=useState([]);
+  
+    useEffect(() => {
+        async function filenames(){
+            
+            var request = await axios.get("http://localhost:9000/get_all_files")
+            let files = request.data;
+            // filesn.forEach((file)=>{
+            //     var id_=file.split(".")
+            //     async function data(){
+            //         var req = await axios.get(`http://localhost:9000/data/${id_[0]}`);
+            //          console.log(req.data.document_name)                    
+            //     }
+            //     data()
+            // })
+            setFiles(files)
+           
+        }
+        filenames()
+        
+    },[])
 
-        </div>
-        <div className="mainbody_docs">
-            <div className="doc_card">
-                <img src={contact} className="doc_image" />
-                <div className="doc_card_content">
-                    <p style={{fontSize:"16px", color:"black", padding:"2px"}}>Hehehehe</p>
-                    <div className="doc_content" style={{fontSize:"12px", color:"gray"}}>
-                        <div className="content_left">
-                        <StorageIcon style={{fontSize:"12px", color:"white", backgroundColor:"#6e2594", padding:"3px", marginRight:"3px",borderRadius:"2px"}}/>
-                        </div>
-                        <div className="content_date">30/10/2001</div>
-                        <MoreVertIcon  style={{fontSize:"16px", color:"gray"}}/>
-                    </div>
+    
+    return (
+        <div className="mainbody">
+            <div className="main_top">
+              <div className="main_top_left" style={{fontSize:"16px",fontWeight:"500"}}>Recent forms</div>
+             
+
+                <div className="main_top_right">
+                <div className="main_top_center" style={{fontSize:"14px",marginRight:"125px"}}>Owned by anyone <ArrowDropDownIcon/></div>
+                    <IconButton >
+                       <StorageIcon style={{    fontSize: '16px',color:"black"}}/>
+                    </ IconButton>
+                    <IconButton >
+                      <FolderOpenIcon style={{    fontSize: '16px',color:"black"}}/>
+                    </ IconButton>
                 </div>
             </div>
+            <div className="main_docs">
+                 {
+                    files.map((ele)=>(
+                        <Card name={ele}/>
+                    ))            
+                 }
+                 <Card />   
+            </div>
         </div>
-    </div>
-  );
+    )
 }
 
-export default Mainbody;
+export default Mainbody

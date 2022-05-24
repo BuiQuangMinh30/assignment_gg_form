@@ -1,55 +1,69 @@
-import React from "react";
-import  MoreVertIcon  from "@material-ui/icons/MoreVert";
-import {Icon, IconButton} from "@material-ui/core"
-import  UnfoldMoreIcon  from "@material-ui/icons/UnfoldMore"; 
-import './Template.css'
-
+import React,{useState,useEffect} from 'react'
+import { IconButton } from '@material-ui/core'
+import "../components/Template.css"
 import blank from '../images/forms-blank-googlecolors.png'
 import party from '../images/party_invite.png'
 import contact from '../images/contact.png'
+import { useNavigate   } from "react-router-dom";
 import uuid from "react-uuid"
-import { useNavigate  } from "react-router-dom";
+import axios from "axios";
 
+import UnfoldMoreIcon from '@material-ui/icons/UnfoldMore';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
+function Templates() {
+    const navigate = useNavigate  ();
 
-function Template() {
-  const navigate  = useNavigate();
-  const createForms = () => {
-      const id_ = uuid();
-      navigate(`/form/${id_}`)
-  }
-  return (
-    <div className="template_section">
-      <div className="template_top">
-        <div className="template_left">
-                <span style={{fontSize:"16px", color:"#202124"}} >Start a new form</span>
-                </div>
-        <div className="template_right">
-            <div className="Gallery_button">
-                Template Gallery
-                <UnfoldMoreIcon fontSize="small"/>
+    function createform(){
+
+        
+        var create_form_id = uuid();
+        navigate(`/form/${create_form_id}`)
+    var questions_list=[{questionText: "Question", questionType:"radio", options : [{optionText: "Option 1"}], open: true, required:false}]
+    
+        axios.post(`http://localhost:9000/add_questions/${create_form_id}`,{
+            "document_name": "untitled_form",
+            "doc_desc": "Add Description",
+            "questions": questions_list,
+            
+            
+        
+          })
+    }
+    return (
+        <div className="template_section">
+           <div className="template_top">
+            <div className="template_left">
+                  <p style={{color:"#202124",fontSize:"16px"}}>Start a new form</p>
             </div>
-            <IconButton>
-                <MoreVertIcon fontSize="small"/>
+            <div className="template_right">
+            <div className="gallery_button">
+                Template gallery
+                <UnfoldMoreIcon fontSize="small" />
+              
+            </div>
+            <IconButton >
+              <MoreVertIcon fontSize="small"/>
             </IconButton>
+           
+            
+            </div>
+            </div>
+            <div className="template_body">
+              <div className="card" onClick={createform}>
+                  <img src={blank}  className="card_image" style={{}}/>
+                  <p className="title" >Blank</p>
+              </div>
+              <div className="card">
+                  <img src={party}  className="card_image" style={{}}/>
+                  <p className="title" style={{fontSize:"small"}}>Party Invite</p>
+              </div>
+              <div className="card">
+                  <img src={contact}  className="card_image" style={{}}/>
+                  <p className="title" style={{fontSize:"small"}}>Contact Information</p>
+              </div>
+            </div>
         </div>
-      </div>
-      
-      <div className="template_body">
-        <div className="card" onClick={createForms}>
-            <img src={blank} alt="" className="card_images"/>
-           <p className="card-title">Blank</p>
-        </div>
-        <div className="card">
-            <img src={party} alt="" className="card_images"/>
-            <p className="card-title">Party Invite</p>
-        </div>
-        <div className="card">
-            <img src={contact} alt="" className="card_images"/>
-            <p className="card-title">Contact Information</p>
-        </div>
-        </div>
-    </div>
-  );
+    )
 }
 
-export default Template;
+export default Templates

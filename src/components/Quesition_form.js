@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "./Quesition_form.css";
+import "../components/Quesition_form.css";
 
 import CropOriginalIcon from "@material-ui/icons/CropOriginal";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
@@ -26,7 +26,7 @@ import FilterNoneIcon from "@material-ui/icons/FilterNone";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 import OndemandVideoIcon from "@material-ui/icons/OndemandVideo";
 import TextFieldsIcon from "@material-ui/icons/TextFields";
-// import CenteredTabs from "./Tabs"
+// import CenteredTabs from "../components/Tabs"
 
 // ------------------------------------------
 
@@ -52,24 +52,23 @@ import DragIndicatorIcon from "@material-ui/icons/DragIndicator";
 
 import SaveIcon from "@material-ui/icons/Save";
 
-// import { useStateValue } from './StateProvider'
-// import { actionTypes } from './reducer'
+import { useStateValue } from "./StateProvider";
+import { actionTypes } from "./reducer";
 import { useParams } from "react-router";
-// import axios from "axios";
+import axios from "axios";
 
 function Question_form() {
-  //   const [{}, dispatch] = useStateValue();
+  const [{}, dispatch] = useStateValue();
   const [questions, setQuestions] = useState([]);
   const [documentName, setDocName] = useState("untitled Document");
 
   const [documentDescription, setDocDesc] = useState("Add Description");
 
-  const [questionType, setType] = useState("radio"); //set mặc định là radio
+  const [questionType, setType] = useState("radio");
   const [questionRequired, setRequired] = useState("true");
   let { id } = useParams();
 
   console.log(id);
-  //khởi tạo giá trị mặc định khi component chạy,
   useEffect(() => {
     var newQuestion = {
       questionText: "Question",
@@ -84,44 +83,41 @@ function Question_form() {
     setQuestions([...questions, newQuestion]);
   }, []);
 
-  //    useEffect(()=>{
-  //     async function data_adding(){
-  //       var request = await axios.get(`http://localhost:3000/data/${id}`);
-  //       console.log("sudeep")
-  //       var question_data=request.data.questions;
-  //       console.log(question_data)
-  //       var doc_name=request.data.document_name
-  //       var doc_descip = request.data.doc_desc
-  //       console.log(doc_name+" "+doc_descip)
-  //       setDocName(doc_name)
-  //       setDocDesc(doc_descip)
-  //       setQuestions( question_data)
-  //       dispatch({
-  //         type: actionTypes.SET_DOC_NAME,
-  //         doc_name: doc_name
+  useEffect(() => {
+    async function data_adding() {
+      var request = await axios.get(`http://localhost:9000/data/${id}`);
+      console.log("sudeep");
+      var question_data = request.data.questions;
+      console.log(question_data);
+      var doc_name = request.data.document_name;
+      var doc_descip = request.data.doc_desc;
+      console.log(doc_name + " " + doc_descip);
+      setDocName(doc_name);
+      setDocDesc(doc_descip);
+      setQuestions(question_data);
+      dispatch({
+        type: actionTypes.SET_DOC_NAME,
+        doc_name: doc_name,
+      });
 
-  //      })
+      dispatch({
+        type: actionTypes.SET_DOC_DESC,
+        doc_desc: doc_descip,
+      });
+      dispatch({
+        type: actionTypes.SET_QUESTIONS,
+        questions: question_data,
+      });
+    }
 
-  //       dispatch({
-  //         type: actionTypes.SET_DOC_DESC,
-  //         doc_desc: doc_descip
-
-  //    })
-  //       dispatch({
-  //           type: actionTypes.SET_QUESTIONS,
-  //           questions:question_data
-
-  //        })
-  //     }
-
-  //     data_adding()
-  //     },[])
+    data_adding();
+  }, []);
 
   function changeType(e) {
-    //   dispatch({
-    //     type:"CHANGE_TYPE",
-    //     questionType:e.target.id
-    //   })
+    // dispatch({
+    //   type:"CHANGE_TYPE",
+    //   questionType:e.target.id
+    // })
     setType(e.target.id);
   }
 
@@ -129,37 +125,35 @@ function Question_form() {
     setType(questionType);
   }, [changeType]);
 
-  // function saveQuestions(){
-  //     console.log("auto saving questions initiated");
-  //     var data = {
-  //       formId: "1256",
-  //       name: "My-new_file",
-  //       description: "first file",
-  //       questions: questions
-  //     }
+  function saveQuestions() {
+    console.log("auto saving questions initiated");
+    var data = {
+      formId: "1256",
+      name: "My-new_file",
+      description: "first file",
+      questions: questions,
+    };
 
-  //     setQuestions(questions)
+    setQuestions(questions);
+  }
 
-  //   }
+  function commitToDB() {
+    console.log(questions);
+    dispatch({
+      type: actionTypes.SET_QUESTIONS,
+      questions: questions,
+    });
 
-  //   function commitToDB(){
-  //     console.log(questions);
-  //     dispatch({
-  //       type: actionTypes.SET_QUESTIONS,
-  //        questions:questions
-
-  //      })
-
-  //      axios.post(`http://localhost:3000/add_questions/${id}`,{
-  //       "document_name": documentName,
-  //       "doc_desc": documentDescription,
-  //       "questions": questions,
-
-  //     })
-  //   }
+    axios.post(`http://localhost:9000/add_questions/${id}`, {
+      document_name: documentName,
+      doc_desc: documentDescription,
+      questions: questions,
+    });
+  }
 
   function addMoreQuestionField() {
-    expandCloseAll(); //khi add thì đóng form hiện tại
+    expandCloseAll(); //I AM GOD
+
     setQuestions((questions) => [
       ...questions,
       {
@@ -172,15 +166,14 @@ function Question_form() {
     ]);
   }
 
-  // thay đổi type questions
   function addQuestionType(i, type) {
     let qs = [...questions];
+    console.log(type);
     qs[i].questionType = type;
 
     setQuestions(qs);
   }
 
-  //copy questions, Close form hiện tai
   function copyQuestion(i) {
     expandCloseAll();
     let qs = [...questions];
@@ -200,6 +193,7 @@ function Question_form() {
   function handleOptionValue(text, i, j) {
     var optionsOfQuestion = [...questions];
     optionsOfQuestion[i].options[j].optionText = text;
+    //newMembersEmail[i]= email;
     setQuestions(optionsOfQuestion);
   }
 
@@ -299,11 +293,10 @@ function Question_form() {
     }
   }
 
-  // đóng tất cả
   function expandCloseAll() {
     let qs = [...questions];
     for (let j = 0; j < qs.length; j++) {
-      qs[j].open = false; //set key open = false để đóng mở rộng
+      qs[j].open = false;
     }
     setQuestions(qs);
   }
@@ -337,7 +330,7 @@ function Question_form() {
                       transform: "rotate(-90deg)",
                       color: "#DAE0E2",
                       position: "relative",
-                      left: "364px",
+                      left: "300px",
                     }}
                     fontSize="small"
                   />
@@ -804,7 +797,15 @@ function Question_form() {
                   setDocName(e.target.value);
                 }}
               ></input>
-              {/* <input type="text" className="question_form_top_desc" placeholder="Form Description" placeholder={documentDescription} value={documentDescription} onChange={(e)=>{setDocDesc(e.target.value)}} ></input> */}
+              <input
+                type="text"
+                className="question_form_top_desc"
+                placeholder={documentDescription}
+                value={documentDescription}
+                onChange={(e) => {
+                  setDocDesc(e.target.value);
+                }}
+              ></input>
             </div>
           </div>
 
@@ -821,7 +822,14 @@ function Question_form() {
           </DragDropContext>
 
           <div className="save_form">
-            {/* <Button variant="contained" color="primary" onClick={commitToDB} style={{fontSize:"14px"}}>Save</Button> */}
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={commitToDB}
+              style={{ fontSize: "14px" }}
+            >
+              Save
+            </Button>
           </div>
         </div>
       </div>
